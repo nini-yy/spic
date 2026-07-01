@@ -1,10 +1,47 @@
 # USAGE
 
 1. Clone the repository at:
-> `git clone 
+> `git clone https://github.com/nini-yy/spic.git`
 
 To launch
-> `npm run build`
+> `npm run build` -- typechecks and builds for production
+> `npm run lint` -- runs ESLint
+
+## File Structure and Information about Navigating files.
+
+```
+src/
+├── main.tsx              # App entry point, mounts <App /> into #root
+├── App.tsx                # Top-level layout + view/page routing (all state lives here)
+├── App.css                # All app styling (sidebar, feed, chat, profile, forms, etc.)
+├── index.css               # Global resets and CSS variables (light/dark theme tokens)
+│
+├── components/
+│   ├── Sidebar.tsx          # Left nav: channel list, Direct Messages list, profile footer
+│   ├── Composer.tsx          # "+ Add Post" bar at the top of the feed
+│   ├── PostCard.tsx           # Single post preview shown in the feed
+│   ├── PostDetail.tsx          # Full post + Discord-style comment thread (click into a post)
+│   ├── NewPostPage.tsx          # Full-page form for creating a new post
+│   ├── DMChat.tsx                # Discord-style direct message thread with a contact
+│   ├── ProfilePage.tsx            # Your profile: post history, DND/notification/privacy settings
+│   └── RightPanel.tsx              # Right column: upcoming events, interns w/ DMs open, stats
+│
+└── data/
+    ├── posts.ts              # Mock posts, channels, post types, upcoming events, intern list
+    ├── dms.ts                 # Mock DM contacts + conversation history (built from posts.ts interns)
+    └── me.ts                    # The current logged-in user (name, avatar, role) — single source
+                                   # of truth so "you" render consistently across every component
+```
+
+**How navigation works:** `App.tsx` holds two pieces of state that control what's on screen —
+`page` (`'home' | 'new-post' | 'profile'`, full-page takeovers) and `view` (`'feed' | 'dm' | 'post'`,
+what renders inside the main column when `page === 'home'`). To change what a component can
+navigate to, add a handler in `App.tsx` and pass it down as a prop — components don't manage
+routing themselves.
+
+**Adding mock content:** edit the arrays in `data/posts.ts` (posts, channels, events, interns) or
+`data/dms.ts` (DM conversations). Everything on screen is derived from those files, so no component
+code needs to change to add a new post, channel, or intern.
 
 # React + TypeScript + Vite
 
