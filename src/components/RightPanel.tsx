@@ -54,21 +54,6 @@ function RightPanel({ onSelectIntern }: RightPanelProps) {
         </ul>
       </div>
 
-      <div className="panel-card stat-card">
-        <h4 className="panel-title">Channel Pulse</h4>
-        <div className="stat-row">
-          <span>Active interns</span>
-          <strong>63</strong>
-        </div>
-        <div className="stat-row">
-          <span>Posts this week</span>
-          <strong>27</strong>
-        </div>
-        <div className="stat-row">
-          <span>Days to Demo Day</span>
-          <strong>24</strong>
-        </div>
-      </div>
     </aside>
   )
 }

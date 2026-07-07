@@ -3,9 +3,12 @@
 Clone the repository at:
 > `git clone https://github.com/nini-yy/spic.git`
 
-To launch:
+To launch, paste into command line in this order:
 > `npm run build` -- typechecks and builds for production \
-> `npm run lint` -- runs ESLint
+> `npm run lint` -- runs ESLint (optional)
+
+
+> `npm run dev` -- runs and launches 
 
 View result at `http://localhost:5173/`
 
