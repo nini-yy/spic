@@ -5,10 +5,12 @@ import Composer from './components/Composer'
 import PostCard from './components/PostCard'
 import NewPostPage from './components/NewPostPage'
 import DMChat from './components/DMChat'
+import GroupChat from './components/GroupChat'
 import PostDetail from './components/PostDetail'
 import ProfilePage from './components/ProfilePage'
 import { posts, typeMeta, type PostType } from './data/posts'
 import { dmContacts } from './data/dms'
+import { groupChats } from './data/groupChats'
 import './App.css'
 
 const filters: Array<{ id: 'all' | PostType; label: string }> = [
@@ -23,12 +25,13 @@ const filters: Array<{ id: 'all' | PostType; label: string }> = [
 function App() {
   const [page, setPage] = useState<'home' | 'new-post' | 'profile'>('home')
   const [newPostType, setNewPostType] = useState<PostType | undefined>(undefined)
-  const [view, setView] = useState<'feed' | 'dm' | 'post'>('feed')
+  const [view, setView] = useState<'feed' | 'dm' | 'post' | 'group'>('feed')
   const [activeChannel, setActiveChannel] = useState('all')
   const [activeFilter, setActiveFilter] = useState<'all' | PostType>('all')
   const [activeDmId, setActiveDmId] = useState<string | null>(null)
   const [activePostId, setActivePostId] = useState<string | null>(null)
   const [searchQuery, setSearchQuery] = useState('')
+  const [activeGroupId, setActiveGroupId] = useState<string | null>(null)
 
   const visiblePosts = useMemo(() => {
     const normalizedSearch = searchQuery.trim().toLowerCase()
@@ -58,6 +61,7 @@ function App() {
 
   const activeContact = dmContacts.find((c) => c.id === activeDmId) ?? null
   const activePost = posts.find((p) => p.id === activePostId) ?? null
+  const activeGroup = groupChats.find((g) => g.id === activeGroupId) ?? null
 
   const goToNewPost = (type?: PostType) => {
     setNewPostType(type)
@@ -82,6 +86,11 @@ function App() {
   const openPost = (postId: string) => {
     setView('post')
     setActivePostId(postId)
+  }
+
+  const openGroup = (groupId: string) => {
+    setView('group')
+    setActiveGroupId(groupId)
   }
 
   if (page === 'new-post') {
@@ -113,11 +122,28 @@ function App() {
         onSelectChannel={openChannel}
         activeDmId={view === 'dm' ? activeDmId : null}
         onSelectDm={openDm}
+        activeGroupId={view === 'group' ? activeGroupId : null}
+        onSelectGroup={openGroup}
         onOpenProfile={() => setPage('profile')}
       />
 
       <div className="main-column">
-        {view === 'post' && activePost ? (
+        {view === 'group' && activeGroup ? (
+          <>
+            <header className="topbar">
+              <div className="dm-topbar-heading">
+                <div className="post-avatar" style={{ background: 'var(--code-bg)' }}>
+                  <span>{activeGroup.icon}</span>
+                </div>
+                <div>
+                  <h1 className="topbar-title">{activeGroup.name}</h1>
+                  <p className="topbar-subtitle">{activeGroup.members.length} members</p>
+                </div>
+              </div>
+            </header>
+            <GroupChat key={activeGroup.id} chat={activeGroup} />
+          </>
+        ) : view === 'post' && activePost ? (
           <>
             <header className="topbar">
               <div>

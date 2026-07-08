@@ -1,5 +1,6 @@
 import { channels } from '../data/posts'
 import { dmContacts } from '../data/dms'
+import { groupChats } from '../data/groupChats'
 import { currentUser } from '../data/me'
 
 function initials(name: string) {
@@ -16,10 +17,20 @@ interface SidebarProps {
   onSelectChannel: (channelId: string) => void
   activeDmId: string | null
   onSelectDm: (dmId: string) => void
+  activeGroupId: string | null
+  onSelectGroup: (groupId: string) => void
   onOpenProfile: () => void
 }
 
-function Sidebar({ activeChannel, onSelectChannel, activeDmId, onSelectDm, onOpenProfile }: SidebarProps) {
+function Sidebar({
+  activeChannel,
+  onSelectChannel,
+  activeDmId,
+  onSelectDm,
+  activeGroupId,
+  onSelectGroup,
+  onOpenProfile,
+}: SidebarProps) {
   return (
     <aside className="sidebar">
       <div className="sidebar-brand">
@@ -47,6 +58,22 @@ function Sidebar({ activeChannel, onSelectChannel, activeDmId, onSelectDm, onOpe
           ))}
         </ul>
 
+        <div className="sidebar-section-label sidebar-section-label-spaced">Group Chats</div>
+        <ul>
+          {groupChats.map((g) => (
+            <li key={g.id}>
+              <button
+                type="button"
+                className={`sidebar-channel${activeGroupId === g.id ? ' active' : ''}`}
+                onClick={() => onSelectGroup(g.id)}
+              >
+                <span className="sidebar-channel-icon">{g.icon}</span>
+                {g.name}
+              </button>
+            </li>
+          ))}
+        </ul>
+
         <div className="sidebar-section-label sidebar-section-label-spaced">Direct Messages</div>
         <ul>
           {dmContacts.map((c) => (
@@ -67,6 +94,7 @@ function Sidebar({ activeChannel, onSelectChannel, activeDmId, onSelectDm, onOpe
             </li>
           ))}
         </ul>
+        
       </nav>
 
       <button type="button" className="sidebar-footer sidebar-footer-button" onClick={onOpenProfile}>
