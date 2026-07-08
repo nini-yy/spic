@@ -30,14 +30,34 @@ function App() {
   const [activeFilter, setActiveFilter] = useState<'all' | PostType>('all')
   const [activeDmId, setActiveDmId] = useState<string | null>(null)
   const [activePostId, setActivePostId] = useState<string | null>(null)
+  const [searchQuery, setSearchQuery] = useState('')
   const [activeGroupId, setActiveGroupId] = useState<string | null>(null)
 
   const visiblePosts = useMemo(() => {
+    const normalizedSearch = searchQuery.trim().toLowerCase()
+
     return posts
       .filter((p) => activeChannel === 'all' || p.channel === activeChannel)
       .filter((p) => activeFilter === 'all' || p.type === activeFilter)
+      .filter((p) => {
+        if (!normalizedSearch) return true
+
+        const searchableText = [
+          p.title,
+          p.body,
+          p.author,
+          p.channel,
+          p.type,
+          ...(p.tags ?? []),
+        ]
+          .filter(Boolean)
+          .join(' ')
+          .toLowerCase()
+
+        return searchableText.includes(normalizedSearch)
+      })
       .sort((a, b) => Number(b.pinned) - Number(a.pinned))
-  }, [activeChannel, activeFilter])
+  }, [activeChannel, activeFilter, searchQuery])
 
   const activeContact = dmContacts.find((c) => c.id === activeDmId) ?? null
   const activePost = posts.find((p) => p.id === activePostId) ?? null
@@ -165,7 +185,13 @@ function App() {
                 <p className="topbar-subtitle">Where the intern class keeps up with each other</p>
               </div>
               <div className="topbar-actions">
-                <input className="search-input" type="text" placeholder="Search posts…" />
+                <input
+                  className="search-input"
+                  type="text"
+                  placeholder="Search posts…"
+                  value={searchQuery}
+                  onChange={(event) => setSearchQuery(event.target.value)}
+                />
                 <button type="button" className="new-post-btn" onClick={() => goToNewPost()}>
                   + New Post
                 </button>
