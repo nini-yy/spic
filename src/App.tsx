@@ -8,6 +8,7 @@ import DMChat from './components/DMChat'
 import GroupChat from './components/GroupChat'
 import PostDetail from './components/PostDetail'
 import ProfilePage from './components/ProfilePage'
+import ComplianceBot from './components/ComplianceBot'
 import { posts, typeMeta, type PostType } from './data/posts'
 import { dmContacts } from './data/dms'
 import { groupChats } from './data/groupChats'
@@ -202,6 +203,7 @@ function App() {
       </div>
 
       <RightPanel onSelectIntern={openDmByName} />
+      <ComplianceBot />
     </div>
   )
 }
